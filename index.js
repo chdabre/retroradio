@@ -47,11 +47,11 @@ api.get('/callback', function (req, res) {
 if (process.env.NODE_ENV === 'production') {
   // Production mode
   // Static Files
-  api.use(express.static(path.join(__dirname, '../frontend/dist')))
+  api.use(express.static(path.join(__dirname, './frontend/dist')))
 
   // Index view
   api.get('/', (req, res) => {
-    res.sendfile(path.join(__dirname, '../frontend/dist/index.html'))
+    res.sendfile(path.join(__dirname, './frontend/dist/index.html'))
   })
 } else {
   // Development mode
@@ -69,7 +69,7 @@ http.listen(PORT, () => {
       if (deviceId) updatePlaybackState().catch(err => console.error(err))
       findDevice()
     }, 10000)
-    console.log(`Spotify backend listening on http://${os.hostname()}:${PORT}`)
+    console.log(`Spotify backend listening on http://${os.hostname()}.local:${PORT}`)
   })
 })
 
