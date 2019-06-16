@@ -1,0 +1,12 @@
+{
+  "name": "retroradio",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.1",
+    "serialport": "^7.1.5",
+    "socket.io": "^2.2.0",
+    "spotify-web-api-node": "^4.0.0"
+  }
+}
