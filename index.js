@@ -132,24 +132,22 @@ remote.on('volume-pressed', event => {
       let isPlaying = playbackState.is_playing
 
       if (isPlaying) {
-        spotify.pause().then(data => {}, err => console.error(`Error in [volume-pressed]: ${err}`))
+        spotify.pause().catch(err => console.error(`Error in [volume-pressed]: ${err}`))
       } else {
         spotify.setShuffle({ state: true }).then(data => {
-          spotify.transferMyPlayback({
+          return spotify.transferMyPlayback({
             deviceIds: [deviceId],
             play: true
-          }).then(data => {
-            updatePlaybackState().catch(err => console.error(err))
-          }).catch(err => {
-            if (err.statusCode === 404) {
-              remote.error()
-            }
           })
-        }, err => {
-          console.error(`Error in [volume-pressed]: ${err}`)
+        }).then(data => {
+          return updatePlaybackState()
+        }).catch(err => {
+          if (err.statusCode === 404) {
+            remote.error()
+          }
         })
       }
-    }, err => {
+    }).catch(err => {
       console.error(`Error in [volume-pressed]: ${err}`)
     })
   } else {
