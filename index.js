@@ -127,30 +127,34 @@ remote.on('volume', event => {
 
 remote.on('volume-pressed', event => {
   if (deviceId) {
+    updatePlaybackState().then(data => {
+      let playbackState = data.body
+      let isPlaying = playbackState.is_playing
+
+      if (isPlaying) {
+        spotify.pause().then(data => {}, err => console.error(`Error in [volume-pressed]: ${err}`))
+      } else {
+        spotify.setShuffle({ state: true }).then(data => {
+          spotify.transferMyPlayback({
+            deviceIds: [deviceId],
+            play: true
+          }).then(data => {
+            updatePlaybackState().catch(err => console.error(err))
+          }).catch(err => {
+            if (err.statusCode === 404) {
+              remote.error()
+            }
+          })
+        }, err => {
+          console.error(`Error in [volume-pressed]: ${err}`)
+        })
+      }
+    }, err => {
+      console.error(`Error in [volume-pressed]: ${err}`)
+    })
   } else {
     remote.error()
   }
-  updatePlaybackState().then(data => {
-    let playbackState = data.body
-    let isPlaying = playbackState.is_playing
-
-    if (isPlaying) {
-      spotify.pause().then(data => {}, err => console.error(`Error in [volume-pressed]: ${err}`))
-    } else {
-      spotify.transferMyPlayback({
-        deviceIds: [deviceId],
-        play: true
-      }).then(data => {
-        updatePlaybackState().catch(err => console.error(err))
-      }).catch(err => {
-        if (err.statusCode === 404) {
-          remote.error()
-        }
-      })
-    }
-  }, err => {
-    console.error(`Error in [volume-pressed]: ${err}`)
-  })
 })
 
 remote.on('select-channel', event => {
