@@ -159,18 +159,20 @@ remote.on('volume-pressed', event => {
 
 remote.on('select-channel', event => {
   if (deviceId) {
-    spotify.transferMyPlayback({
-      deviceIds: [deviceId],
-      play: false
-    }).then(data => {
-      spotify.play({
-        context_uri: state.channels[event.channel]
+    spotify.setShuffle({ state: true }).then(data => {
+      spotify.transferMyPlayback({
+        deviceIds: [deviceId],
+        play: false
+      }).then(data => {
+        spotify.play({
+          context_uri: state.channels[event.channel]
+        }).catch(err => {
+          if (err.statusCode === 404) remote.error()
+        })
       }).catch(err => {
         if (err.statusCode === 404) remote.error()
       })
-    }).catch(err => {
-      if (err.statusCode === 404) remote.error()
-    })
+    }).catch(err => console.error(err))
   } else {
     remote.error()
   }
