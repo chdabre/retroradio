@@ -329,7 +329,7 @@ function refreshToken (authSettings) {
 function storeSettings (authSettings) {
   let storeSettings = JSON.stringify(authSettings)
   if (typeof storeSettings !== 'undefined') {
-    fs.writeFileSync('./auth.json', storeSettings)
+    fs.writeFileSync(path.join(__dirname, './auth.json'), storeSettings)
   } else {
     console.error('[storeSettings] Error while trying to save auth settings', authSettings)
   }
